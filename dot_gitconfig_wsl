@@ -1,0 +1,5 @@
+# ~/.gitconfig_wsl
+# Configuración que solo se aplica dentro de WSL
+
+[credential]
+    helper = store

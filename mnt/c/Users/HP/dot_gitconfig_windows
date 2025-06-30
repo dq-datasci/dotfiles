@@ -1,0 +1,10 @@
+# .gitconfig_windows
+# Configuración que solo se aplica en Windows
+
+[core]
+    # Gestiona automáticamente los finales de línea (CRLF)
+    autocrlf = true
+
+[credential]
+    # Usa el excelente Git Credential Manager de Windows
+    helper = manager-core

@@ -1,19 +1,25 @@
 # Contenido para dot_gitconfig.tmpl
+# Esta es la configuración base, común para Windows y WSL.
 
 [user]
     name = {{ .name }}
     email = {{ .email }}
 
 [core]
-    defaultBranch = main
+    # Necesario para que includeIf funcione correctamente en Windows
     longpaths = true
+    # Excluye los archivos de configuración específicos del OS del git global
+    excludesfile = ~/.gitignore_global
 
 [init]
     defaultBranch = main
 
-# Lógica para Múltiples Máquinas
-[includeIf "gitdir:~/work/"]
-    path = ~/.gitconfig_work
+# --- Lógica de Inclusión Condicional ---
 
+# Incluye la configuración específica de WSL si el directorio de trabajo está bajo /home/
 [includeIf "gitdir:/home/"]
     path = ~/.gitconfig_wsl
+
+# Incluye la configuración específica de Windows si el directorio de trabajo está en el disco C:
+[includeIf "gitdir:C:/"]
+    path = .gitconfig_windows
