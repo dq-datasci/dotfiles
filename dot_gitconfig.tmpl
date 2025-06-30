@@ -1,0 +1,19 @@
+# Contenido para dot_gitconfig.tmpl
+
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+
+[core]
+    defaultBranch = main
+    longpaths = true
+
+[init]
+    defaultBranch = main
+
+# Lógica para Múltiples Máquinas
+[includeIf "gitdir:~/work/"]
+    path = ~/.gitconfig_work
+
+[includeIf "gitdir:/home/"]
+    path = ~/.gitconfig_wsl
