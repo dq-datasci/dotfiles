@@ -1,0 +1,11 @@
+# ~/.gitconfig_windows
+# Config exclusively for Windows
+
+[core]
+    # Windows natively uses CRLF line endings. 
+    # This tells Git to automatically handle conversions so you don't fight with Linux.
+    autocrlf = true
+
+[credential]
+    # This tells Windows to use its native, secure Credential Manager GUI 
+    helper = manager
