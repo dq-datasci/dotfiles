@@ -102,6 +102,8 @@ path+="$HOME/bin"
 #
 ## --- Databricks Automations ---
 alias fetch-uvalle="databricks workspace export-dir /Users/ronaldriveraab@gmail.com/UValle ~/Projects/uvalle-ml-class/Class_Material --profile class"
+# # Open Databricks Workspace directly to uvalle-ml-class
+alias open-db='"/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" --profile-directory="Profile 1" "https://dbc-899f0f54-fb27.cloud.databricks.com/browse/folders/2985073390299083?o=7474651274301926"'
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
