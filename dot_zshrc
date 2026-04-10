@@ -100,6 +100,9 @@ path+="$HOME/bin"
 # - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
 #
+## --- Databricks Automations ---
+alias fetch-uvalle="databricks workspace export-dir /Users/ronaldriveraab@gmail.com/UValle ~/Projects/uvalle-ml-class/Class_Material --profile class"
+alias prep-cells="find ~/Projects/uvalle-ml-class/Active_Workspace -type f -name '*.py' -exec sed -i 's/# COMMAND ----------/# %%/g' {} +"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
