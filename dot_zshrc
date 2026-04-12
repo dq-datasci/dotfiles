@@ -104,9 +104,26 @@ path+="$HOME/bin"
 alias fetch-uvalle="databricks workspace export-dir /Users/ronaldriveraab@gmail.com/UValle ~/Projects/uvalle-ml-class/Class_Material --profile class"
 # # Open Databricks Workspace directly to uvalle-ml-class
 alias open-db='"/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" --profile-directory="Profile 1" "https://dbc-899f0f54-fb27.cloud.databricks.com/browse/folders/2985073390299083?o=7474651274301926"'
+# Launch Antigravity IDE natively in WSL (Silenced & Backgrounded)
+ag() {
+    "/mnt/c/Users/HP/AppData/Local/Programs/Antigravity/antigravity.exe" --remote wsl+ubuntu "$@" > /dev/null 2>&1 &
+}
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # zstyle :omz:plugins:ssh-agent identities id_ed25519
 
 . "$HOME/.local/bin/env"
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'micromamba shell init' !!
+export MAMBA_EXE='/home/dq-datasci/.local/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/home/dq-datasci/micromamba';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from micromamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
