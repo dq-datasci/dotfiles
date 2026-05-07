@@ -132,3 +132,59 @@ unset __mamba_setup
 # <<< mamba initialize <<<
 
 eval "$(direnv hook zsh)"
+# ==========================================
+# BI PROJECT AUTOMATION (V2 - Hybrid)
+# ==========================================
+function mkbi() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please provide a project name."
+        echo "👉 Usage: mkbi <project_name>"
+        return 1
+    fi
+
+    local project_name="$1"
+    echo "🚀 Bootstrapping new hybrid BI project: $project_name..."
+
+    # 1. Crear y entrar a la carpeta
+    mkdir -p "$project_name"
+    cd "$project_name" || return 1
+
+    # 2. Inicializar Python con uv (Mejor práctica: pyproject.toml)
+    echo "🐍 Initializing Python environment with uv..."
+    uv init
+
+    # Instalación de librerías core (reemplazan la lista larga de 'prueba')
+    echo "⬇️ Adding Python core: JupyterLab, Pandas, Requests, BS4..."
+    uv add jupyterlab pandas requests beautifulsoup4
+
+    # 3. Configurar variables de entorno y direnv
+    echo "⚙️ Configuring environment variables (.envrc)..."
+    echo 'export PROJECT_ENV="development"' > .envrc
+    echo 'export RENV_CONFIG_PAK_ENABLED=true' >> .envrc
+    echo 'source .venv/bin/activate' >> .envrc
+    direnv allow
+
+    # 4. Inicializar R (renv + pak) con Tidyverse y Reticulate
+    echo "📦 Initializing R clean room..."
+    Rscript -e "pak::pkg_install('renv', ask=FALSE); renv::init(bare=TRUE)"
+
+    # Instalamos el "Golden Set" de librerías de R para BI
+    echo "📦 Installing Tidyverse, Reticulate, RMarkdown and Here..."
+    Rscript -e "pak::pkg_install(c('tidyverse', 'reticulate', 'rmarkdown', 'here'), ask=FALSE)"
+
+    # Tomar snapshot final para sincronizar el lockfile
+    Rscript -e "renv::snapshot(prompt=FALSE)"
+
+    echo "✅ Success! Hybrid Project '$project_name' is isolated and ready."
+    echo "💻 Run 'ag .' to launch Google Antigravity."
+}
+
+# ==========================================
+# GLOBAL SYSTEM CONFIGURATIONS
+# ==========================================
+
+# Enlaza Chromium para que Quarto pueda renderizar PDFs/Imágenes
+export QUARTO_CHROMIUM="/usr/bin/google-chrome"
+
+# Enlaza los binarios de uv a tu PATH global
+export PATH="$HOME/.local/bin:$PATH"
