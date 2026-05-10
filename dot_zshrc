@@ -115,8 +115,6 @@ ag() {
 
 . "$HOME/.local/bin/env"
 
-# [INGENIERÍA DE DATOS]
-export SPARK_LOCAL_IP="127.0.0.1"
 
 # >>> mamba initialize >>>
 # !! Contents within this block are managed by 'micromamba shell init' !!
