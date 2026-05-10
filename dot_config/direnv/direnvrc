@@ -1,0 +1,26 @@
+layout_anaconda() {
+  local name=$1
+  local conda_path="$HOME/micromamba"
+  local env_path="$conda_path/envs/$name"
+
+  if [ -d "$env_path" ]; then
+    # 1. Cargamos las rutas PRIMERO
+    export CONDA_PREFIX="$env_path"
+    export PATH="$env_path/bin:$PATH"
+    export PYSPARK_PYTHON="$env_path/bin/python"
+    export JAVA_HOME="$env_path"
+    export SPARK_LOCAL_IP="127.0.0.1"
+
+    # 2. Generamos el archivo para el IDE (EOF pegado al margen izquierdo)
+    cat <<EOF > pyrightconfig.json
+{
+  "venvPath": "$conda_path/envs",
+  "venv": "$name"
+}
+EOF
+
+    echo "direnv: 🚀 Entorno '$name' cargado correctamente"
+  else
+    echo "direnv: ❌ Error: No se encontró el entorno en $env_path"
+  fi
+}

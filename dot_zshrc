@@ -143,39 +143,49 @@ function mkbi() {
     fi
 
     local project_name="$1"
+    local project_path="$(pwd)/$project_name"
     echo "🚀 Bootstrapping new hybrid BI project: $project_name..."
 
     # 1. Crear y entrar a la carpeta
     mkdir -p "$project_name"
     cd "$project_name" || return 1
 
-    # 2. Inicializar Python con uv (Mejor práctica: pyproject.toml)
+    # 2. Inicializar Python con uv e instalar Radian local
     echo "🐍 Initializing Python environment with uv..."
     uv init
-
-    # Instalación de librerías core (reemplazan la lista larga de 'prueba')
-    echo "⬇️ Adding Python core: JupyterLab, Pandas, Requests, BS4..."
-    uv add jupyterlab pandas requests beautifulsoup4
+    echo "⬇️ Installing Python core & Local Radian..."
+    uv add jupyterlab pandas numpy requests beautifulsoup4 radian
 
     # 3. Configurar variables de entorno y direnv
     echo "⚙️ Configuring environment variables (.envrc)..."
     echo 'export PROJECT_ENV="development"' > .envrc
     echo 'export RENV_CONFIG_PAK_ENABLED=true' >> .envrc
+    echo 'export RETICULATE_PYTHON="./.venv/bin/python"' >> .envrc
     echo 'source .venv/bin/activate' >> .envrc
     direnv allow
 
-    # 4. Inicializar R (renv + pak) con Tidyverse y Reticulate
+    # 4. Automatizar configuración de Antigravity (VS Code)
+    echo "🛠️ Configuring IDE settings (.vscode/settings.json)..."
+    mkdir -p .vscode
+    cat <<EOF > .vscode/settings.json
+{
+    "r.rterm.linux": "$project_path/.venv/bin/radian",
+    "r.lsp.path": "$project_path/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu/languageserver/bin/languageserver",
+    "r.lsp.enabled": true,
+    "r.plot.view": "httpgd"
+}
+EOF
+
+    # 5. Inicializar R con Inteligencia y Gráficos HD
     echo "📦 Initializing R clean room..."
-    Rscript -e "pak::pkg_install('renv', ask=FALSE); renv::init(bare=TRUE)"
+    Rscript -e "
+    options(renv.config.pak.enabled = TRUE);
+    renv::init(bare = TRUE);
+    renv::install(c('tidyverse', 'reticulate', 'rmarkdown', 'here', 'languageserver', 'httpgd'));
+    renv::snapshot(prompt=FALSE);
+    "
 
-    # Instalamos el "Golden Set" de librerías de R para BI
-    echo "📦 Installing Tidyverse, Reticulate, RMarkdown and Here..."
-    Rscript -e "pak::pkg_install(c('tidyverse', 'reticulate', 'rmarkdown', 'here'), ask=FALSE)"
-
-    # Tomar snapshot final para sincronizar el lockfile
-    Rscript -e "renv::snapshot(prompt=FALSE)"
-
-    echo "✅ Success! Hybrid Project '$project_name' is isolated and ready."
+    echo "✅ Success! Project '$project_name' is isolated and fully configured."
     echo "💻 Run 'ag .' to launch Google Antigravity."
 }
 
