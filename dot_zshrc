@@ -142,7 +142,7 @@ function mkbi() {
 
     local project_name="$1"
     local project_path="$(pwd)/$project_name"
-    echo "🚀 Bootstrapping new hybrid BI project: $project_name..."
+    echo "🚀 Bootstrapping new full-stack BI project: $project_name..."
 
     # 1. Crear y entrar a la carpeta
     mkdir -p "$project_name"
@@ -163,8 +163,10 @@ function mkbi() {
     direnv allow
 
     # 4. Automatizar configuración de Antigravity (VS Code)
-    echo "🛠️ Configuring IDE settings (.vscode/settings.json)..."
+    echo "🛠️ Configuring IDE settings & full debugger (.vscode/)..."
     mkdir -p .vscode
+    
+    # settings.json
     cat <<EOF > .vscode/settings.json
 {
     "r.rterm.linux": "$project_path/.venv/bin/radian",
@@ -174,19 +176,67 @@ function mkbi() {
 }
 EOF
 
-    # 5. Inicializar R con Inteligencia y Gráficos HD
+    # launch.json (Incluyendo Package Debug y Attach)
+    cat <<EOF > .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "R-Debugger",
+            "name": "Launch R-Workspace",
+            "request": "launch",
+            "debugMode": "workspace",
+            "workingDirectory": "\${workspaceFolder}"
+        },
+        {
+            "type": "R-Debugger",
+            "name": "Debug R-File",
+            "request": "launch",
+            "debugMode": "file",
+            "workingDirectory": "\${workspaceFolder}",
+            "file": "\${file}"
+        },
+        {
+            "type": "R-Debugger",
+            "name": "Debug R-Function",
+            "request": "launch",
+            "debugMode": "function",
+            "workingDirectory": "\${workspaceFolder}",
+            "file": "\${file}",
+            "mainFunction": "main",
+            "allowGlobalDebugging": false
+        },
+        {
+            "type": "R-Debugger",
+            "name": "Debug R-Package",
+            "request": "launch",
+            "debugMode": "workspace",
+            "workingDirectory": "\${workspaceFolder}",
+            "includePackageScopes": true,
+            "loadPackages": ["."]
+        },
+        {
+            "type": "R-Debugger",
+            "request": "attach",
+            "name": "Attach to R process",
+            "splitOverwrittenOutput": true
+        }
+    ]
+}
+EOF
+
+    # 5. Inicializar R con todas las herramientas de desarrollo
     echo "📦 Initializing R clean room..."
     Rscript -e "
     options(renv.config.pak.enabled = TRUE);
     renv::init(bare = TRUE);
-    renv::install(c('tidyverse', 'reticulate', 'rmarkdown', 'here', 'languageserver', 'httpgd'));
+    renv::install(c('tidyverse', 'reticulate', 'rmarkdown', 'here', 'languageserver', 'httpgd', 'vscDebugger'));
     renv::snapshot(prompt=FALSE);
     "
 
-    echo "✅ Success! Project '$project_name' is isolated and fully configured."
+    echo "✅ Success! Project '$project_name' is isolated and fully equipped."
     echo "💻 Run 'ag .' to launch Google Antigravity."
 }
-
 # ==========================================
 # GLOBAL SYSTEM CONFIGURATIONS
 # ==========================================
