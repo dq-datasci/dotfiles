@@ -224,16 +224,16 @@ EOF
     ]
 }
 EOF
-
-    # 5. Inicializar R con todas las herramientas de desarrollo
+    # 5. Inicializar R con todas las herramientas (Ajuste para GitHub)
     echo "📦 Initializing R clean room..."
     Rscript -e "
     options(renv.config.pak.enabled = TRUE);
     renv::init(bare = TRUE);
-    renv::install(c('tidyverse', 'reticulate', 'rmarkdown', 'here', 'languageserver', 'httpgd', 'vscDebugger'));
+    # NOTA: Agregamos 'github::' para asegurar que encuentre vscDebugger
+    renv::install(c('tidyverse', 'reticulate', 'rmarkdown', 'here', 'languageserver', 'httpgd', 'github::ManuelHentschel/vscDebugger'));
     renv::snapshot(prompt=FALSE);
     "
-
+    
     echo "✅ Success! Project '$project_name' is isolated and fully equipped."
     echo "💻 Run 'ag .' to launch Google Antigravity."
 }
